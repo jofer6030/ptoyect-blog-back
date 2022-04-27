@@ -1,25 +1,67 @@
 const { Router } = require("express");
+const { check } = require("express-validator");
 
-const { listPosts } = require("../controllers/posts.controllers");
+// const {
+//   listPosts,
+//   createPost,
+//   getPost,
+//   updatePost,
+//   deletePost,
+// } = require("../controllers/posts.controllers");
+
+const pCon = require("../controllers/posts.controllers");
+
+const { existePostbyId } = require("../helpers/validate-id");
+const { validateErrors } = require("../middleware/validar-errors");
 
 const router = Router();
 
 const postRoutes = (app) => {
   app.use("/api/v1/posts", router);
 
-  router.get("/", listPosts);
+  router.get("/", pCon.listPosts);
 
-  // TODO: Get by ID route
-  // router.get("/:id");
+  router.get(
+    "/:id",
+    [
+      check("id", "El id debe ser un MongoID").isMongoId(),
+      check("id").custom(existePostbyId),
+      validateErrors,
+    ],
+    pCon.getPost
+  );
 
-  // TODO: Post route
-  // router.post("/");
+  router.post(
+    "/new",
+    [
+      check("title", "El title debe contener almenos 5 caractéres").isLength({
+        min: 5,
+      }),
+      check("description", "La descripción es requerida").not().isEmpty(),
+      validateErrors,
+    ],
+    pCon.createPost
+  );
 
-  // TODO: Put by ID route
-  // router.put("/:id");
+  router.put(
+    "/:id",
+    [
+      check("id", "El id debe ser un MongoID").isMongoId(),
+      check("id").custom(existePostbyId),
+      validateErrors,
+    ],
+    pCon.updatePost
+  );
 
-  // TODO: Delete by ID route
-  // router.delete("/:id");
+  router.delete(
+    "/:id",
+    [
+      check("id", "El id debe ser un MongoID").isMongoId(),
+      check("id").custom(existePostbyId),
+      validateErrors,
+    ],
+    pCon.deletePost
+  );
 };
 
 module.exports = postRoutes;
