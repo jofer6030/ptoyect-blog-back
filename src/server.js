@@ -5,6 +5,7 @@ const morgan = require("morgan");
 const { connectDB } = require("./config/dbConnect");
 
 const postRoutes = require("./routes/posts.routes");
+const userRoutes = require("./routes/user.routes");
 
 class Server {
   constructor() {
@@ -28,6 +29,7 @@ class Server {
 
   routes() {
     postRoutes(this.app);
+    userRoutes(this.app);
   }
 
   listen() {
