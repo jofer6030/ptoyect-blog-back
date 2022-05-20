@@ -80,10 +80,45 @@ const deletePost = async (req, res) => {
   }
 };
 
+const searchPosts = async (req, res) => {
+  const { likes, title } = req.query;
+  if (likes) {
+    try {
+      const likesStringToNumber = Number(likes);
+      const posts = await Post.find({ likes: likesStringToNumber });
+
+      res.status(200).json({
+        msg: "Posts encontrados",
+        posts,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  } else if (title) {
+    try {
+      const posts = await Post.find({ title });
+
+      res.status(200).json({
+        msg: "Posts encontrados",
+        posts,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  } else {
+    const posts = await Post.find();
+    res.status(200).json({
+      msg: "Posts encontrados",
+      posts,
+    });
+  }
+};
+
 module.exports = {
   listPosts,
   getPost,
   createPost,
   updatePost,
   deletePost,
+  searchPosts,
 };

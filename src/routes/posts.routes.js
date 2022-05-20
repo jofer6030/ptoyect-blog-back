@@ -31,6 +31,8 @@ const postRoutes = (app) => {
     pCon.getPost
   );
 
+  router.get("/search/post", pCon.searchPosts);
+
   router.post(
     "/new",
     [
